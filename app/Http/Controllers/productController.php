@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use illuminate\support\Facades\Validator;
+use Illuminate\support\Facades\Validator;
 
 class productController extends Controller
 {
@@ -19,24 +18,40 @@ class productController extends Controller
     }
 
     public function store(Request $request) {
-      $validator = Validator::make(
-        $request->all(),
-        [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'price' => 'required|numeric',
+            'price' => 'required',
             'description' => 'required',
-        ]
-        );
+        ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->messages()], 422);
+            $data = [
+                'message' => 'Error en la validación de los datos',
+                'errors' => $validator->errors(),
+                'status' => 400
+            ];
+            return response()->json($data, 400);
         }
-        $productos = Product::create([
+        $producto = Product::create([
             'name' => $request->name,
             'price' => $request->price,
             'description' => $request->description,
-            ]);
-            return response()->json(['message' => 'Producto creado con exito'], 201);
+
+        ]);
+        if (!$producto) {
+            $data = [
+                'message' => 'Error al crear el estudiante',
+                'status' => 500
+            ];
+            return response()->json($data, 500);
+        }
+        $data = [
+            'student' => $producto,
+            'status' => 201
+        ];
+
+        return response()->json($data, 201);
     }
+
     public function show($id) {
         $producto = Product::find($id);
         if (!$producto) {
@@ -72,7 +87,7 @@ class productController extends Controller
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->messages()], 422);
                 }
-            $producto->name = $producto->name;
+            $producto->name = $request->name;
             $producto->price = $request->price;
             $producto->description = $request->description;
             $producto->save();

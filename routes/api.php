@@ -5,11 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\productController;
 
 Route::get('/product', [productController::class, 'index']);
-
-Route::get('/product/{id}', [productController::class, 'show']);
+//post
 Route::post('/product', [productController::class, 'store']);
-Route::put('/product/{id}', function () {
-    return 'actualizar producto';
-});
+Route::get('/product/{id}', [productController::class, 'show']);
+Route::put('/product/{id}', [productController::class, 'update']);
 Route::delete('/product/{id}', [productController::class, 'destroy']);
 
