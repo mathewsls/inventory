@@ -2,16 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\productController;
 
-Route::get('/product', function () {
-    return 'lista de productos';
-});
+Route::get('/product', [productController::class, 'index']);
+
 Route::get('/product/{id}', function () {
     return 'obteniendo un producto';
 });
-Route::post('/product', function () {
-    return 'crear producto';
-});
+Route::post('/product', [productController::class, 'store']);
 Route::put('/product/{id}', function () {
     return 'actualizar producto';
 });
