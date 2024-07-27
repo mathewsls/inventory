@@ -37,4 +37,46 @@ class productController extends Controller
             ]);
             return response()->json(['message' => 'Producto creado con exito'], 201);
     }
+    public function show($id) {
+        $producto = Product::find($id);
+        if (!$producto) {
+            return response([
+                'message' => 'No se encontro el producto'
+                ], 404);
+                }
+        return response()->json($producto, 200);
+    }
+    public function destroy($id) {
+        $producto = Product::find($id);
+        if (!$producto) {
+            return response([
+                'message' => 'No se encontro el producto'
+                ], 404);
+                }
+        $producto->delete();
+        return response()->json(['message' => 'Producto eliminado con exito'], 200);
+        }
+
+        public function update(Request $request, $id){
+            $producto = Product::find($id);
+            if (!$producto) {
+                return response([
+                    'message' => 'No se encontro el producto'
+                    ], 404);
+                    }
+            $validator = Validator::make($request->all(), [
+                    'name' => 'required',
+                    'price' => 'required|numeric',
+                    'description' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->messages()], 422);
+                }
+            $producto->name = $producto->name;
+            $producto->price = $request->price;
+            $producto->description = $request->description;
+            $producto->save();
+            return response()->json(['message' => 'Producto actualizado con exito'], 200);
+            }
 }
+
